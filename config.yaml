@@ -7,11 +7,10 @@ model:
 agent:
   # Детский профиль: вычитаем рискованные тулсеты на уровне агента
   # (действует на CLI, gateway, cron и передаётся дочерним делегатам).
+  # Учебные тулсеты (terminal, file, browser, code_execution) ВКЛЮЧЕНЫ —
+  # но поведение ограничено скиллом kid-rules + deny-блоклистом ниже.
+  # Выключено то, что ребёнку не нужно и опасно.
   disabled_toolsets:
-    - terminal
-    - file
-    - browser
-    - code_execution
     - delegation
     - cronjob
     - messaging
@@ -24,22 +23,32 @@ agent:
     - computer_use
     - connections
 
-# Каждый опасный паттерн команды требует подтверждения человеком;
-# deny — безусловный блоклист, его нельзя обойти даже YOLO-режимом.
+# Каждый опасный паттерн команды требует подтверждения человеком (mode: manual);
+# deny — безусловный блоклист: удаление, система, выключение — даже YOLO не обходит.
 approvals:
   mode: manual
   deny:
-    - "rm -rf*"
-    - "rm -fr*"
-    - "rmdir /s*"
+    - "rm -r*"
+    - "rm -f*"
+    - "rmdir*"
+    - "rd *"
+    - "del *"
     - "del /f*"
-    - "rd /s*"
+    - "erase *"
+    - "Remove-Item*"
+    - "ri *"
     - "format*"
     - "shutdown*"
     - "taskkill*"
-    - "Remove-Item*"
-    - "reg *delete*"
-    - "*cipher /w*"
+    - "reg *"
+    - "regedit*"
+    - "*cipher *"
+    - "diskpart*"
+    - "bcdedit*"
+    - "schtasks*"
+    - "net user*"
+    - "netsh*"
+    - "*Set-MpPreference*"
 
 # Память под присмотром: ничего не сохраняется без явного одобрения.
 memory:
@@ -50,3 +59,46 @@ security:
   redact_secrets: true
 
 _config_version: 51
+platform_toolsets:
+  cli:
+    - browser
+    - clarify
+    - code_execution
+    - file
+    - memory
+    - skills
+    - terminal
+    - todo
+    - vision
+    - web
+known_plugin_toolsets:
+  cli:
+    - a2a
+known_builtin_toolsets:
+  cli:
+    - browser
+    - clarify
+    - code_execution
+    - computer_use
+    - connections
+    - context_engine
+    - cronjob
+    - delegation
+    - discord
+    - discord_admin
+    - file
+    - image_gen
+    - kanban
+    - memory
+    - session_search
+    - skills
+    - stt
+    - terminal
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+    - x_search
+    - yuanbao
