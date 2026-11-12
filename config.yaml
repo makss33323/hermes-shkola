@@ -21,6 +21,8 @@ agent:
     - session_search
     - debugging
     - kanban
+    - computer_use
+    - connections
 
 # Каждый опасный паттерн команды требует подтверждения человеком;
 # deny — безусловный блоклист, его нельзя обойти даже YOLO-режимом.
