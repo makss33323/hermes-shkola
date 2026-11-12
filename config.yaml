@@ -1,0 +1,50 @@
+model:
+  base_url: https://openrouter.ai/api/v1
+  default: z-ai/glm-5.3-flash:floor
+  provider: openrouter
+  api_mode: chat_completions
+
+agent:
+  # Детский профиль: вычитаем рискованные тулсеты на уровне агента
+  # (действует на CLI, gateway, cron и передаётся дочерним делегатам).
+  disabled_toolsets:
+    - terminal
+    - file
+    - browser
+    - code_execution
+    - delegation
+    - cronjob
+    - messaging
+    - image_gen
+    - video
+    - tts
+    - session_search
+    - debugging
+    - kanban
+
+# Каждый опасный паттерн команды требует подтверждения человеком;
+# deny — безусловный блоклист, его нельзя обойти даже YOLO-режимом.
+approvals:
+  mode: manual
+  deny:
+    - "rm -rf*"
+    - "rm -fr*"
+    - "rmdir /s*"
+    - "del /f*"
+    - "rd /s*"
+    - "format*"
+    - "shutdown*"
+    - "taskkill*"
+    - "Remove-Item*"
+    - "reg *delete*"
+    - "*cipher /w*"
+
+# Память под присмотром: ничего не сохраняется без явного одобрения.
+memory:
+  write_approval: true
+
+# Маскировать строки, похожие на ключи/токены, в выводе инструментов.
+security:
+  redact_secrets: true
+
+_config_version: 51
